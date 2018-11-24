@@ -1,15 +1,25 @@
 import requests
-print(dir(requests))
+TOKEN = "702271639:AAHttXpYn4RSAsDpa91yiZEtvruBqdxzvAc"
+import requests
 import time    
 import urllib
+import os
+from flask import Flask,redirect, url_for,request,render_template
+from threading import Thread
 
-TOKEN = "702271639:AAHttXpYn4RSAsDpa91yiZEtvruBqdxzvAc"
+app = Flask(__name__)
+
+TOKEN = 'Enter your token'
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
-print('start')
+print('Started')
+@app.route('/')
+def main():
+    return f'''<html><head><title>Devandran</title></head><body><div>Visit:<a href="http://devandran.cf">Devandran</a><br></div></body></html>'''
+
 def get_updates(offset=None):
     url = URL + "getUpdates?timeout=100"
     if offset:
-        url += "&offsetreformat(offset)"
+        url += "&offset={}".format(offset)
     return  requests.get(url).json()
 
 def get_last_update_id(updates):
@@ -20,7 +30,20 @@ def get_last_update_id(updates):
 
 def send_message(text, chat_id):
     text = urllib.parse.quote_plus(text)
-    url=URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
+    if text=='gb':
+        headers={"User-Agent":"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:59.0) Gecko/20100101 Firefox/59.0","Content-Type":"application/x-www-form-urlencoded"}
+        gurl="http://www.reliablecounter.com/count.php?page=gobiartscollege.org&digit=style/plain/6/&reloads=0"
+        for i in range(1,1000):
+            try:
+                r=requests.get(gurl,headers=headers,)
+                if r.reason!='OK':print(r.text)
+            except Exception as e:
+                print(e)
+                print(gurl)
+            if i%999==0:
+                url=URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
+    else:
+        url=URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
     try:
         r=requests.get(url,timeout=30)
         if r.reason!='OK':print(r.text)
@@ -54,5 +77,12 @@ def echo_all(updates):
         except Exception as e:
             print(e)
 
-if __name__ == '__main__':
-    main()
+def snt(f,a,b=None):
+  try:
+    Thread(None,f,None,a,b).start()
+  except Exception as e:
+    return str(e)
+
+snt(main,())
+
+
