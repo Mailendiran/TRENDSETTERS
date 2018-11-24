@@ -11,9 +11,24 @@ app = Flask(__name__)
 
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 print('Started')
+
 @app.route('/')
 def main():
     return f'''Cool'''
+
+from datetime import *
+def restart():
+    while True:
+        try:
+            v=(datetime.utcnow()+timedelta(hours=5,minutes=30))
+            if(5*60<v.hour*60+v.minute<21*60+30):
+                requests.head('http://trendsettersbot.herokuapp.com/up/pys',timeout=25)
+            sleep(25*60)
+        except Exception as e:
+            exception(e)
+            sleep(60)
+            continue
+
 
 def get_updates(offset=None):
     url = URL + "getUpdates?timeout=100"
@@ -70,5 +85,6 @@ def snt(f,a,b=None):
     return str(e)
 
 snt(main,())
+snt(restart,())
 
 
